@@ -8,3 +8,10 @@ body {
   height: 540px;
   border: 1px solid black;
 }
+
+.bars {
+  fill: orange;
+  stroke: grey;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
