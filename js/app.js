@@ -15,9 +15,10 @@ d3.json("data/paydays.json",function(data) {
   var all = cf.groupAll();
   var participants = cf.dimension(function(d) { return d.nparticipants} );
   var start = cf.dimension(function(d) {return d.ts_start} );
+  console.log(start.top(Infinity));
 
   var picker_x = d3.scale.ordinal()
-    .domain(d3.range(data.length))
+    .domain(start.top(Infinity).map(function(d) { return d.ts_start; }))
     .rangeRoundBands([0,width])
   var picker_y = d3.scale.linear()
     .domain([0,d3.max(data, function(d) { return d.nparticipants})])
@@ -27,18 +28,20 @@ d3.json("data/paydays.json",function(data) {
     .enter()
     .append("rect")
     .classed("bars",true)
-    .attr("x",function(d,i) { return picker_x(i); })
+    .attr("x",function(d,i) { return picker_x(d.ts_start); })
     .attr("y",function(d,i) { return picker_y(d.nparticipants); })
     .attr("width",picker_x.rangeBand())
     .attr("height", function(d,i) { return height - picker_y(d.nparticipants); })
 
     //let's get brushing!
-  hero.append("g")
-    .attr("class", "brush")
-    .call(d3.svg.brush().x(picker_x)
+  var brush = d3.svg.brush().x(picker_x)
       .on("brushstart", brushstart)
       .on("brush", brushmove)
-      .on("brushend", brushend))
+      .on("brushend", brushend);
+
+  hero.append("g")
+    .attr("class", "brush")
+    .call(brush)
     .selectAll("rect")
     .attr("height", height);
 
@@ -53,11 +56,9 @@ d3.json("data/paydays.json",function(data) {
 
   function brushmove() {
     var s = d3.event.target.extent();
-    bars.classed("selected", function(d,i) { return s[0] <= (x = picker_x(i)) && x <= s[1]; });
+    bars.classed("selected", function(d,i) { return s[0] < (x = picker_x(d.ts_start)) && x < s[1]; });
     var selected = document.getElementsByClassName("selected");
-    console.log(selected);
     var label="Inspecting " + selected.length + " weeks."
     document.getElementById("label").innerHTML=label;
-
   }
 });
