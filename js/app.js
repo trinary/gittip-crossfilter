@@ -2,7 +2,8 @@ var margin = { top: 10, left: 20, bottom: 30, right: 0};
 var width = 960;
 var height = 160;
 var marginTransform = d3.svg.transform().translate([margin.left, margin.top])
-var svg = d3.select("#content").append("svg").attr("transform",marginTransform);
+var hero = d3.select("#content").append("svg").attr("transform",marginTransform);
+hero.attr("width",width).attr("height",height);
 
 d3.json("data/paydays.json",function(data) { 
   data.reverse(); // This is still backwards.
@@ -21,7 +22,7 @@ d3.json("data/paydays.json",function(data) {
   var picker_y = d3.scale.linear()
     .domain([0,d3.max(data, function(d) { return d.nparticipants})])
     .range([height,0])
-  var picker = svg.append("g").classed("picker",true);
+  var picker = hero.append("g").classed("picker",true);
   var bars = picker.selectAll(".bars").data(data)
     .enter()
     .append("rect")
@@ -32,7 +33,7 @@ d3.json("data/paydays.json",function(data) {
     .attr("height", function(d,i) { return height - picker_y(d.nparticipants); })
 
     //let's get brushing!
-  svg.append("g")
+  hero.append("g")
     .attr("class", "brush")
     .call(d3.svg.brush().x(picker_x)
       .on("brushstart", brushstart)
