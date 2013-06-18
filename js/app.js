@@ -2,7 +2,7 @@ var margin = { top: 10, left: 20, bottom: 30, right: 0};
 var width = 960;
 var height = 160;
 var marginTransform = d3.svg.transform().translate([margin.left, margin.top])
-var hero = d3.select("#content").append("svg").attr("transform",marginTransform);
+var hero = d3.select("#hero").attr("transform",marginTransform);
 hero.attr("width",width).attr("height",height);
 
 d3.json("data/paydays.json",function(data) { 
@@ -54,5 +54,10 @@ d3.json("data/paydays.json",function(data) {
   function brushmove() {
     var s = d3.event.target.extent();
     bars.classed("selected", function(d,i) { return s[0] <= (x = picker_x(i)) && x <= s[1]; });
+    var selected = document.getElementsByClassName("selected");
+    console.log(selected);
+    var label="Inspecting " + selected.length + " weeks."
+    document.getElementById("label").innerHTML=label;
+
   }
 });
