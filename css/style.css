@@ -27,6 +27,5 @@ body {
   fill-opacity: .2;
 }
 .bars.selected {
-  stroke: #fff;
-  stroke-width: 2px;
+  fill: rgb(250, 215, 152);
 }
