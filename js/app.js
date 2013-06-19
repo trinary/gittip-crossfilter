@@ -6,11 +6,6 @@ var hero = d3.select("#hero").attr("transform",marginTransform);
 hero.attr("width",width).attr("height",height);
 
 d3.json("data/paydays.json",function(data) { 
-  data.reverse(); // This is still backwards.
-  data.forEach(function(i) {
-    i.ts_start = new Date(i.ts_start);
-    i.ts_end = new Date(i.ts_end);
-  });
   var cf = crossfilter(data);
   var all = cf.groupAll();
   var participants = cf.dimension(function(d) { return d.nparticipants} );
@@ -60,5 +55,6 @@ d3.json("data/paydays.json",function(data) {
     var selected = document.getElementsByClassName("selected");
     var label="Inspecting " + selected.length + " weeks."
     document.getElementById("label").innerHTML=label;
+    start.filterFunction(function(d) { return s[0] < picker_x(d) && picker_x(d) < s[1]});
   }
 });
