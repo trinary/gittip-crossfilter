@@ -65,6 +65,9 @@ d3.json("data/paydays.json",function(data) {
     littleChart(start.top(Infinity),d3.select("#ntransfers"), function(d,i) {
       return d.ntransfers;
     });
+    littleChart(start.top(Infinity),d3.select("#chargevolume"), function(d,i) {
+      return d.charge_volume;
+    });
   }
 
   function littleChart(data, elem, accessor) {
