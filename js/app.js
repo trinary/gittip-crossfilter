@@ -56,6 +56,9 @@ d3.json("data/paydays.json",function(data) {
     var label="Inspecting " + selected.length + " weeks."
     document.getElementById("label").innerHTML=label;
     start.filterFunction(function(d) { return s[0] < picker_x(d) && picker_x(d) < s[1]});
+    littleChart(start.top(Infinity),d3.select("#tippers"),function(d,i) { 
+      return d.ntippers;
+    });
     littleChart(start.top(Infinity),d3.select("#volume"),function(d,i) { 
       return d.transfer_volume;
     });
@@ -72,7 +75,7 @@ d3.json("data/paydays.json",function(data) {
     var width = 540;
     var accessed = data.map(accessor);
     var hist = d3.layout.histogram()
-      .bins(10)
+      .bins(6)
       (accessed);
     var xScale = d3.scale.linear()
       .domain(d3.extent(hist, function(d,i) { return d.x; }))
