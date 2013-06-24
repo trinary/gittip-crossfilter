@@ -29,3 +29,15 @@ body {
 .bars.selected {
   fill: rgb(250, 215, 152);
 }
+
+.mini {
+  height: 140px;
+  width: 40%;
+  float: left;
+  margin: 10px;
+}
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}

@@ -6,13 +6,14 @@ var hero = d3.select("#hero").attr("transform",marginTransform);
 hero.attr("width",width).attr("height",height);
 
 d3.json("data/paydays.json",function(data) { 
+  data = data.reverse();
   var cf = crossfilter(data);
   var all = cf.groupAll();
   var participants = cf.dimension(function(d) { return d.nparticipants} );
   var start = cf.dimension(function(d) {return d.ts_start} );
 
   var picker_x = d3.scale.ordinal()
-    .domain(start.top(Infinity).map(function(d) { return d.ts_start; }))
+    .domain(start.bottom(Infinity).map(function(d) { return d.ts_start; }))
     .rangeRoundBands([0,width])
   var picker_y = d3.scale.linear()
     .domain([0,d3.max(data, function(d) { return d.nparticipants})])
@@ -55,9 +56,11 @@ d3.json("data/paydays.json",function(data) {
     var label="Inspecting " + selected.length + " weeks."
     document.getElementById("label").innerHTML=label;
     start.filterFunction(function(d) { return s[0] < picker_x(d) && picker_x(d) < s[1]});
-    console.log(start.top(Infinity));
     littleChart(start.top(Infinity),d3.select("#volume"),function(d,i) { 
       return d.transfer_volume;
+    });
+    littleChart(start.top(Infinity),d3.select("#ntransfers"), function(d,i) {
+      return d.ntransfers;
     });
   }
 
@@ -65,27 +68,36 @@ d3.json("data/paydays.json",function(data) {
     var svg = elem.select("svg");
     svg.selectAll("g").remove();
     var g = svg.append("g");
-    var height = svg.attr("height");
-    var width = svg.attr("width");
+    var height = 120;
+    var width = 540;
     var accessed = data.map(accessor);
-    console.log(data, accessed);
     var hist = d3.layout.histogram()
-        .bins(10)
-        (accessed);
-    var x_scale = d3.scale.linear()
-        .domain(d3.extent(hist, function(d,i) { return d.x; }))
-        .range([0,width]);
-    var y_scale = d3.scale.linear()
-        .domain([0,d3.max(hist, function(d,i) { return d.y; })])
-        .range([height,0]);
-    g.selectAll(".hist")
+      .bins(10)
+      (accessed);
+    var xScale = d3.scale.linear()
+      .domain(d3.extent(hist, function(d,i) { return d.x; }))
+      .range([0,width])
+    xScale.ticks(5);
+    var yScale = d3.scale.linear()
+      .domain([0,d3.max(hist, function(d,i) { return d.y; })])
+      .range([height,0]);
+
+    var xAxis = d3.svg.axis()
+      .scale(xScale)
+      .orient("bottom");
+
+    g.selectAll(".bars")
       .data(hist)
       .enter()
       .append("rect")
-      .classed("hist", true)
-      .attr("x", function(d,i) { console.log(d); return x_scale(d.x); })
-      .attr("y", function(d,i) { return height - y_scale(d.y); })
-      .attr("width", function(d,i) { return x_scale(d.dx); })
-      .attr("height", function(d,i) { return y_scale(d.y);})
+      .classed("bars", true)
+      .attr("x", function(d,i) { return xScale(d.x); })
+      .attr("y", function(d,i) { return height - yScale(d.y); })
+      .attr("width", 10)
+      .attr("height", function(d,i) { return yScale(d.y);})
+    g.append("g")
+      .classed("x axis",true)
+      .attr("transform",d3.svg.transform().translate([0,height]))
+      .call(xAxis);
   }
 });
