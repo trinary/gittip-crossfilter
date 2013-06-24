@@ -75,7 +75,7 @@ d3.json("data/paydays.json",function(data) {
     var width = 540;
     var accessed = data.map(accessor);
     var hist = d3.layout.histogram()
-      .bins(6)
+      .bins(10)
       (accessed);
     var xScale = d3.scale.linear()
       .domain(d3.extent(hist, function(d,i) { return d.x; }))
