@@ -10,7 +10,6 @@ d3.json("data/paydays.json",function(data) {
   var all = cf.groupAll();
   var participants = cf.dimension(function(d) { return d.nparticipants} );
   var start = cf.dimension(function(d) {return d.ts_start} );
-  console.log(start.top(Infinity));
 
   var picker_x = d3.scale.ordinal()
     .domain(start.top(Infinity).map(function(d) { return d.ts_start; }))
@@ -56,5 +55,37 @@ d3.json("data/paydays.json",function(data) {
     var label="Inspecting " + selected.length + " weeks."
     document.getElementById("label").innerHTML=label;
     start.filterFunction(function(d) { return s[0] < picker_x(d) && picker_x(d) < s[1]});
+    console.log(start.top(Infinity));
+    littleChart(start.top(Infinity),d3.select("#volume"),function(d,i) { 
+      return d.transfer_volume;
+    });
+  }
+
+  function littleChart(data, elem, accessor) {
+    var svg = elem.select("svg");
+    svg.selectAll("g").remove();
+    var g = svg.append("g");
+    var height = svg.attr("height");
+    var width = svg.attr("width");
+    var accessed = data.map(accessor);
+    console.log(data, accessed);
+    var hist = d3.layout.histogram()
+        .bins(10)
+        (accessed);
+    var x_scale = d3.scale.linear()
+        .domain(d3.extent(hist, function(d,i) { return d.x; }))
+        .range([0,width]);
+    var y_scale = d3.scale.linear()
+        .domain([0,d3.max(hist, function(d,i) { return d.y; })])
+        .range([height,0]);
+    g.selectAll(".hist")
+      .data(hist)
+      .enter()
+      .append("rect")
+      .classed("hist", true)
+      .attr("x", function(d,i) { console.log(d); return x_scale(d.x); })
+      .attr("y", function(d,i) { return height - y_scale(d.y); })
+      .attr("width", function(d,i) { return x_scale(d.dx); })
+      .attr("height", function(d,i) { return y_scale(d.y);})
   }
 });
