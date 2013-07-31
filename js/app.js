@@ -74,7 +74,7 @@ d3.json("data/paydays.json",function(data) {
     var svg = elem.select("svg");
     var g = svg.select("g");
     var height = 160;
-    var width = 520;
+    var width = 960;
     var margin = {top: 0, bottom: 20, left: 20, right:0};
     svg.attr("width", width);
     svg.attr("height", height);
@@ -92,7 +92,7 @@ d3.json("data/paydays.json",function(data) {
 
     var xAxis = d3.svg.axis()
       .scale(xScale)
-      .tickFormat(d3.format("%s"))
+      .tickFormat(d3.format("r"))
       .orient("bottom");
 
     var bars = g.selectAll(".bars")
