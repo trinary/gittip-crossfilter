@@ -74,19 +74,23 @@ d3.json("data/paydays.json",function(data) {
     var svg = elem.select("svg");
     svg.selectAll("g").remove();
     var g = svg.append("g");
-    var height = 120;
+    var height = 160;
     var width = 540;
+    var margin = {top: 0, bottom: 20, left: 20, right:0};
+    svg.attr("width", width);
+    svg.attr("height", height);
     var accessed = data.map(accessor);
     var hist = d3.layout.histogram()
       .bins(10)
       (accessed);
+    console.log(hist);
     var xScale = d3.scale.linear()
       .domain(d3.extent(hist, function(d,i) { return d.x; }))
-      .range([0,width])
+      .range([0,width - margin.left - margin.right])
     xScale.ticks(5);
     var yScale = d3.scale.linear()
       .domain([0,d3.max(hist, function(d,i) { return d.y; })])
-      .range([height,0]);
+      .range([height - margin.top - margin.bottom, 0]);
 
     var xAxis = d3.svg.axis()
       .scale(xScale)
@@ -98,12 +102,12 @@ d3.json("data/paydays.json",function(data) {
       .append("rect")
       .classed("bars", true)
       .attr("x", function(d,i) { return xScale(d.x); })
-      .attr("y", function(d,i) { return height - yScale(d.y); })
+      .attr("y", function(d,i) { return height - yScale(d.y) - margin.bottom; })
       .attr("width", 10)
       .attr("height", function(d,i) { return yScale(d.y);})
     g.append("g")
       .classed("x axis",true)
-      .attr("transform",d3.svg.transform().translate([0,height]))
+      .attr("transform",d3.svg.transform().translate([0,height - margin.bottom]))
       .call(xAxis);
   }
 });

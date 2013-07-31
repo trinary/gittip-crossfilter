@@ -29,10 +29,7 @@ body {
 }
 
 .mini {
-  height: 180px;
-  width: 40%;
   float: left;
-  margin: 10px;
 }
 .axis path, .axis line {
   fill: none;
