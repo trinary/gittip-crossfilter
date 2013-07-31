@@ -72,10 +72,9 @@ d3.json("data/paydays.json",function(data) {
 
   function littleChart(data, elem, accessor) {
     var svg = elem.select("svg");
-    svg.selectAll("g").remove();
-    var g = svg.append("g");
+    var g = svg.select("g");
     var height = 160;
-    var width = 540;
+    var width = 520;
     var margin = {top: 0, bottom: 20, left: 20, right:0};
     svg.attr("width", width);
     svg.attr("height", height);
@@ -83,31 +82,36 @@ d3.json("data/paydays.json",function(data) {
     var hist = d3.layout.histogram()
       .bins(10)
       (accessed);
-    console.log(hist);
-    var xScale = d3.scale.linear()
-      .domain(d3.extent(hist, function(d,i) { return d.x; }))
-      .range([0,width - margin.left - margin.right])
-    xScale.ticks(5);
+    var xScale = d3.scale.ordinal()
+      .domain(hist.map(function(d) { return d.x}))
+      .rangeRoundBands([0,width - margin.left - margin.right], 0.2)
     var yScale = d3.scale.linear()
       .domain([0,d3.max(hist, function(d,i) { return d.y; })])
       .range([height - margin.top - margin.bottom, 0]);
+    console.log(xScale);
 
     var xAxis = d3.svg.axis()
       .scale(xScale)
+      .tickFormat(d3.format("%s"))
       .orient("bottom");
 
-    g.selectAll(".bars")
+    var bars = g.selectAll(".bars")
       .data(hist)
-      .enter()
+    bars.enter()
       .append("rect")
       .classed("bars", true)
+    bars.transition()
       .attr("x", function(d,i) { return xScale(d.x); })
       .attr("y", function(d,i) { return height - yScale(d.y) - margin.bottom; })
-      .attr("width", 10)
+      .attr("width", xScale.rangeBand)
       .attr("height", function(d,i) { return yScale(d.y);})
-    g.append("g")
+    bars.exit()
+      .remove()
+    g.select(".x.axis").remove()
+    axis = g.append("g")
       .classed("x axis",true)
       .attr("transform",d3.svg.transform().translate([0,height - margin.bottom]))
+      .transition()
       .call(xAxis);
   }
 });

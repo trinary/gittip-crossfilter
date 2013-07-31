@@ -29,6 +29,8 @@ body {
 }
 
 .mini {
+  height: 200px;
+  width: 540px;
   float: left;
 }
 .axis path, .axis line {
