@@ -88,7 +88,6 @@ d3.json("data/paydays.json",function(data) {
     var yScale = d3.scale.linear()
       .domain([0,d3.max(hist, function(d,i) { return d.y; })])
       .range([height - margin.top - margin.bottom, 0]);
-    console.log(xScale);
 
     var xAxis = d3.svg.axis()
       .scale(xScale)
