@@ -91,7 +91,7 @@ d3.json("data/paydays.json",function(data) {
 
     var xAxis = d3.svg.axis()
       .scale(xScale)
-      .tickFormat(d3.format("r"))
+      .tickFormat(d3.format(".3r"))
       .orient("bottom");
 
     var bars = g.selectAll(".bars")
