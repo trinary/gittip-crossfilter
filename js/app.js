@@ -5,7 +5,7 @@ var marginTransform = d3.svg.transform().translate([margin.left, margin.top])
 var hero = d3.select("#hero").attr("transform",marginTransform);
 hero.attr("width",width).attr("height",height);
 
-d3.json("data/paydays.json",function(data) { 
+d3.json("https://www.gittip.com/about/paydays.json",function(data) { 
   data = data.reverse();
   var cf = crossfilter(data);
   var all = cf.groupAll();
